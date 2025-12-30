@@ -169,10 +169,20 @@
         let csv = await fetchSeq(name);
         pyodide.FS.writeFile(`/seqlists/${name}.csv`, csv);
 
-        let transformer = comboparser.ComboTransformer(name);
-        let parsed_text = comboparser.comboparser.parse(combo);
-        let processed_text = transformer.transform(parsed_text);
-        comboparser.exportCombo([filename, processed_text]);
+        try {
+          let transformer = comboparser.ComboTransformer(name);
+          let parsed_text = comboparser.comboparser.parse(combo);
+          let processed_text = transformer.transform(parsed_text);
+          comboparser.exportCombo([filename, processed_text]);
+        } catch (e) {
+          alert(
+            "Something went wrong, most likely due to an invalid combo notation. Click the Help button for more information."
+          );
+          console.log(e);
+        } finally {
+          submitButton.removeAttribute("disabled");
+          submitButton.innerText = "Submit";
+        }
 
         const file = pyodide.FS.readFile(`/trials/${filename}.txt`, {
           encoding: "utf8",
@@ -190,9 +200,6 @@
         downloadLink.click();
 
         URL.revokeObjectURL(fileURL);
-
-        submitButton.removeAttribute("disabled");
-        submitButton.innerText = "Submit";
 
         return false;
       }
