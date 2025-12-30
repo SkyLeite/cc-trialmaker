@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="./reset.css" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <form id="form">
+      <fieldset id="fieldset" disabled="disabled">
+        <p>
+          <select name="moon">
+            <option value="C">Crescent</option>
+            <option value="H">Half</option>
+            <option value="F">Full</option>
+          </select>
+
+          <select name="character">
+            <option value="Akiha">Akiha</option>
+            <option value="Aoko">Aoko</option>
+            <option value="Arc">Arc</option>
+            <option value="Ciel">Ciel</option>
+            <option value="Hime">Hime</option>
+            <option value="Hisui">Hisui</option>
+            <option value="Kohaku">Kohaku</option>
+            <option value="KohaMech">KohaMech</option>
+            <option value="Kouma">Kouma</option>
+            <option value="Len">Len</option>
+            <option value="M.Hisui">M.Hisui</option>
+            <option value="Maids(Hisui)">Maids (Hisui)</option>
+            <option value="Maids(Kohaku)">Maids (Kohaku)</option>
+            <option value="Miyako">Miyako</option>
+            <option value="NAC">NAC</option>
+            <option value="Nanaya">Nanaya</option>
+            <option value="Neko">Neko</option>
+            <option value="NekoMech">NekoMech</option>
+            <option value="Nero">Nero</option>
+            <option value="P.Ciel">P.Ciel</option>
+            <option value="Ries">Ries</option>
+            <option value="Roa">Roa</option>
+            <option value="Ryougi">Ryougi</option>
+            <option value="S.Akiha">S.Akiha</option>
+            <option value="Satsuki">Satsuki</option>
+            <option value="Sion">Sion</option>
+            <option value="Tohno">Tohno</option>
+            <option value="V.Akiha">V.Akiha</option>
+            <option value="V.Sion">V.Sion</option>
+            <option value="W.Len">W.Len</option>
+            <option value="Wara">Wara</option>
+            <option value="Warc">Warc</option>
+          </select>
+        </p>
+
+        <p>
+          <label for="filename">Filename:</label>
+          <input
+            id="filename"
+            name="filename"
+            type="text"
+            placeholder="Filename"
+          />
+        </p>
+
+        <p>
+          <label id="combo-label" for="combo">Combo:</label><br />
+          <textarea id="combo" name="combo"></textarea>
+          <!-- <input
+            id="combo"
+            name="combo"
+            type="text"
+            placeholder="Combo notation"
+          /> -->
+        </p>
+
+        <button id="submit" type="submit">Submit</button>
+      </fieldset>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.0/full/pyodide.js"></script>
+    <script type="text/javascript">
+      let pyodide;
+      let micropip;
+      let comboparser;
+      let submitButton = document.getElementById("submit");
+
+      async function setup() {
+        pyodide = await loadPyodide();
+
+        // Setup filesystem
+        pyodide.FS.mkdir("/seqlists");
+        pyodide.FS.mkdir("/trials");
+
+        // Install Lark
+        await pyodide.loadPackage("micropip");
+        micropip = pyodide.pyimport("micropip");
+        await micropip.install("lark");
+
+        // Run comboparser.py
+        await pyodide.runPythonAsync(`
+            from pyodide.http import pyfetch
+            response = await pyfetch("./comboparser.py")
+            with open("comboparser.py", "wb") as f:
+                f.write(await response.bytes())
+        `);
+        comboparser = pyodide.pyimport("comboparser");
+      }
+
+      async function fetchSeq(name) {
+        return await fetch(`./seqlists/${name}.csv`)
+          .then((d) => d.arrayBuffer())
+          .then((d) => new Uint8Array(d));
+      }
+
+      async function submit(event) {
+        event.preventDefault();
+
+        submitButton.setAttribute("disabled", "disabled");
+        submitButton.innerText = "Generating...";
+
+        const { filename, character, combo, moon } = Object.fromEntries(
+          new FormData(event.target)
+        );
+
+        const name = `${moon}-${character}`;
+        let csv = await fetchSeq(name);
+        pyodide.FS.writeFile(`/seqlists/${name}.csv`, csv);
+
+        let transformer = comboparser.ComboTransformer(name);
+        let parsed_text = comboparser.comboparser.parse(combo);
+        let processed_text = transformer.transform(parsed_text);
+        comboparser.exportCombo([filename, processed_text]);
+
+        const file = pyodide.FS.readFile(`/trials/${filename}.txt`, {
+          encoding: "utf8",
+        });
+        const blob = new Blob([file], {
+          type: "text/plain;charset=utf8",
+        });
+
+        const fileURL = URL.createObjectURL(blob);
+
+        const downloadLink = document.createElement("a");
+        downloadLink.href = fileURL;
+        downloadLink.download = `${filename}.txt`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+
+        URL.revokeObjectURL(fileURL);
+
+        submitButton.removeAttribute("disabled");
+        submitButton.innerText = "Submit";
+
+        return false;
+      }
+
+      document.getElementById("form").addEventListener("submit", submit);
+
+      setup().then(() => {
+        const fieldset = document.getElementById("fieldset");
+        fieldset.removeAttribute("disabled");
+      });
+    </script>
+  </body>
+</html>
