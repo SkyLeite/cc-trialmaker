@@ -1,79 +1,100 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="./reset.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <form id="form">
-      <fieldset id="fieldset" disabled="disabled">
-        <p>
-          <select name="moon">
-            <option value="C">Crescent</option>
-            <option value="H">Half</option>
-            <option value="F">Full</option>
-          </select>
+    <main>
+      <form id="form">
+        <fieldset id="fieldset" disabled="disabled">
+          <p>
+            <select name="moon">
+              <option value="C">Crescent</option>
+              <option value="H">Half</option>
+              <option value="F">Full</option>
+            </select>
 
-          <select name="character">
-            <option value="Akiha">Akiha</option>
-            <option value="Aoko">Aoko</option>
-            <option value="Arc">Arc</option>
-            <option value="Ciel">Ciel</option>
-            <option value="Hime">Hime</option>
-            <option value="Hisui">Hisui</option>
-            <option value="Kohaku">Kohaku</option>
-            <option value="KohaMech">KohaMech</option>
-            <option value="Kouma">Kouma</option>
-            <option value="Len">Len</option>
-            <option value="M.Hisui">M.Hisui</option>
-            <option value="Maids(Hisui)">Maids (Hisui)</option>
-            <option value="Maids(Kohaku)">Maids (Kohaku)</option>
-            <option value="Miyako">Miyako</option>
-            <option value="NAC">NAC</option>
-            <option value="Nanaya">Nanaya</option>
-            <option value="Neko">Neko</option>
-            <option value="NekoMech">NekoMech</option>
-            <option value="Nero">Nero</option>
-            <option value="P.Ciel">P.Ciel</option>
-            <option value="Ries">Ries</option>
-            <option value="Roa">Roa</option>
-            <option value="Ryougi">Ryougi</option>
-            <option value="S.Akiha">S.Akiha</option>
-            <option value="Satsuki">Satsuki</option>
-            <option value="Sion">Sion</option>
-            <option value="Tohno">Tohno</option>
-            <option value="V.Akiha">V.Akiha</option>
-            <option value="V.Sion">V.Sion</option>
-            <option value="W.Len">W.Len</option>
-            <option value="Wara">Wara</option>
-            <option value="Warc">Warc</option>
-          </select>
-        </p>
+            <select name="character">
+              <option value="Akiha">Akiha</option>
+              <option value="Aoko">Aoko</option>
+              <option value="Arc">Arc</option>
+              <option value="Ciel">Ciel</option>
+              <option value="Hime">Hime</option>
+              <option value="Hisui">Hisui</option>
+              <option value="Kohaku">Kohaku</option>
+              <option value="KohaMech">KohaMech</option>
+              <option value="Kouma">Kouma</option>
+              <option value="Len">Len</option>
+              <option value="M.Hisui">M.Hisui</option>
+              <option value="Maids(Hisui)">Maids (Hisui)</option>
+              <option value="Maids(Kohaku)">Maids (Kohaku)</option>
+              <option value="Miyako">Miyako</option>
+              <option value="NAC">NAC</option>
+              <option value="Nanaya">Nanaya</option>
+              <option value="Neko">Neko</option>
+              <option value="NekoMech">NekoMech</option>
+              <option value="Nero">Nero</option>
+              <option value="P.Ciel">P.Ciel</option>
+              <option value="Ries">Ries</option>
+              <option value="Roa">Roa</option>
+              <option value="Ryougi">Ryougi</option>
+              <option value="S.Akiha">S.Akiha</option>
+              <option value="Satsuki">Satsuki</option>
+              <option value="Sion">Sion</option>
+              <option value="Tohno">Tohno</option>
+              <option value="V.Akiha">V.Akiha</option>
+              <option value="V.Sion">V.Sion</option>
+              <option value="W.Len">W.Len</option>
+              <option value="Wara">Wara</option>
+              <option value="Warc">Warc</option>
+            </select>
+          </p>
 
-        <p>
-          <label for="filename">Filename:</label>
-          <input
-            id="filename"
-            name="filename"
-            type="text"
-            placeholder="Filename"
-          />
-        </p>
+          <p>
+            <label for="filename">Filename:</label>
+            <input
+              id="filename"
+              name="filename"
+              type="text"
+              placeholder="Filename"
+              required
+            />
+          </p>
 
-        <p>
-          <label id="combo-label" for="combo">Combo:</label><br />
-          <textarea id="combo" name="combo"></textarea>
-          <!-- <input
+          <p>
+            <label id="combo-label" for="combo">Combo:</label><br />
+            <textarea id="combo" name="combo" required></textarea>
+            <!-- <input
             id="combo"
             name="combo"
             type="text"
             placeholder="Combo notation"
           /> -->
-        </p>
+          </p>
 
-        <button id="submit" type="submit">Submit</button>
-      </fieldset>
-    </form>
+          <button id="submit" type="submit">Submit</button>
+        </fieldset>
+      </form>
+    </main>
+
+    <footer>
+      <p><span>By</span> <a href="https://leite.dev">Sky Leite</a></p>
+    </footer>
+
+    <div id="loading-overlay">
+      <div class="loader"></div>
+      <p id="error">
+        <span>Something went wrong. Please report the following error:</span
+        ><br /><span id="error-msg"></span>
+      </p>
+      <!-- <span id="overlay-text">Loading...</span> -->
+    </div>
 
     <script src="https://cdn.jsdelivr.net/pyodide/v0.29.0/full/pyodide.js"></script>
     <script type="text/javascript">
@@ -81,8 +102,15 @@
       let micropip;
       let comboparser;
       let submitButton = document.getElementById("submit");
+      let overlay = document.getElementById("loading-overlay");
+      let overlayText = document.getElementById("overlay-text");
 
       async function setup() {
+        // Show overlay
+        // overlay.classList.add("slide-in-left");
+        // overlayText.classList.add("tracking-in-expand");
+
+        // Load pyodide
         pyodide = await loadPyodide();
 
         // Setup filesystem
@@ -154,10 +182,18 @@
 
       document.getElementById("form").addEventListener("submit", submit);
 
-      setup().then(() => {
-        const fieldset = document.getElementById("fieldset");
-        fieldset.removeAttribute("disabled");
-      });
+      setup()
+        .then(() => {
+          const fieldset = document.getElementById("fieldset");
+          fieldset.removeAttribute("disabled");
+
+          overlay.classList.remove("slide-in-left");
+          overlay.classList.add("slide-out-right");
+        })
+        .catch((e) => {
+          document.getElementById("error").style.visibility = "visible";
+          document.getElementById("error-msg").innerText = e;
+        });
     </script>
   </body>
 </html>
